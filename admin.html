@@ -3,38 +3,89 @@
 <head>
   <title>The Hooch | Admin</title>
   <style>
-    body { font-family:Poppins,sans-serif; background:#fff0f6; padding:2rem; }
-    h1 { color:#ff6fae; }
-    input,button { padding:10px; margin:8px 0; width:100%; }
-    table { width:100%; background:white; margin-top:20px; }
+    body {
+      font-family: Arial;
+      background: #fff0f6;
+      padding: 2rem;
+    }
+    .box {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,.1);
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+    }
+    button {
+      background: #ff6fae;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+    table {
+      width: 100%;
+      margin-top: 20px;
+      background: white;
+    }
   </style>
 </head>
 <body>
 
-<h1>Admin Dashboard</h1>
+<div class="box" id="loginBox">
+  <h2>Admin Login</h2>
+  <input id="user" placeholder="Username">
+  <input id="pass" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+</div>
 
-<input id="name" placeholder="Product Name">
-<input id="price" placeholder="Price">
-<button onclick="add()">Add Product</button>
+<div class="box" id="adminBox" style="display:none;">
+  <h2>Product Manager</h2>
+  <input id="name" placeholder="Product Name">
+  <input id="price" placeholder="Price">
+  <button onclick="add()">Add Product</button>
 
-<table>
-  <tbody id="list"></tbody>
-</table>
+  <table>
+    <tbody id="list"></tbody>
+  </table>
+
+  <button onclick="logout()">Logout</button>
+</div>
 
 <script>
+const USERNAME = "admin";
+const PASSWORD = "1234";
+
+function login(){
+  if(user.value === USERNAME && pass.value === PASSWORD){
+    loginBox.style.display = "none";
+    adminBox.style.display = "block";
+  } else {
+    alert("Wrong login details");
+  }
+}
+
 let products = JSON.parse(localStorage.getItem("products")) || [];
 
 function add(){
-  products.push({name:name.value,price:price.value});
-  localStorage.setItem("products",JSON.stringify(products));
+  products.push({name:name.value, price:price.value});
+  localStorage.setItem("products", JSON.stringify(products));
   render();
 }
 
 function render(){
   list.innerHTML="";
   products.forEach(p=>{
-    list.innerHTML+=`<tr><td>${p.name}</td><td>${p.price}</td></tr>`;
+    list.innerHTML += `<tr><td>${p.name}</td><td>${p.price}</td></tr>`;
   });
+}
+
+function logout(){
+  location.reload();
 }
 
 render();
