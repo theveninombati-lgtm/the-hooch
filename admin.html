@@ -44,10 +44,94 @@
 </div>
 
 <div class="box" id="adminBox" style="display:none;">
-  <h2>Product Manager</h2>
+  <h2>Admin Dashboard</h2>
+
+  <h3>Add Product</h3>
   <input id="name" placeholder="Product Name">
-  <input id="price" placeholder="Price">
-  <button onclick="add()">Add Product</button>
+  <input id="price" placeholder="Price (KES)">
+  <input id="stock" placeholder="Stock Quantity">
+  <input type="file" id="media" accept="image/*,video/*">
+  <button onclick="addProduct()">Add Product</button>
+
+  <h3>Products</h3>
+  <table border="1" width="100%">
+    <thead>
+      <tr>
+        <th>Media</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Stock</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody id="list"></tbody>
+  </table>
+
+  <h3>Orders / Invoices</h3>
+  <ul id="orders"></ul>
+
+  <button onclick="logout()">Logout</button>
+</div>
+<script>
+const USERNAME = "admin";
+const PASSWORD = "1234";
+
+function login(){
+  if(user.value === USERNAME && pass.value === PASSWORD){
+    loginBox.style.display = "none";
+    adminBox.style.display = "block";
+    render();
+    loadOrders();
+  } else alert("Wrong login");
+}
+
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+function addProduct(){
+  const file = media.files[0];
+  const reader = new FileReader();
+
+  reader.onload = function(){
+    products.push({
+      name: name.value,
+      price: price.value,
+      stock: stock.value,
+      media: reader.result,
+      type: file.type.startsWith("video") ? "video" : "image"
+    });
+    localStorage.setItem("products", JSON.stringify(products));
+    render();
+  };
+
+  if(file) reader.readAsDataURL(file);
+}
+
+function deleteProduct(index){
+  products.splice(index,1);
+  localStorage.setItem("products", JSON.stringify(products));
+  render();
+}
+
+function render(){
+  list.innerHTML = "";
+  products.forEach((p,i)=>{
+    list.innerHTML += `
+      <tr>
+        <td>${p.type==="image"
+          ? `<img src="${p.media}" width="60">`
+          : `<video src="${p.media}" width="60" muted></video>`}
+        </td>
+        <td>${p.name}</td>
+        <td>${p.price}</td>
+        <td>${p.stock}</td>
+        <td><button onclick="deleteProduct(${i})">❌</button></td>
+      </tr>`;
+  });
+}
+
+function logout(){ location.reload(); }
+</script>
+
 
   <table>
     <tbody id="list"></tbody>
