@@ -193,6 +193,56 @@
 </footer>
 
 <script>
+ <script>
+let products = JSON.parse(localStorage.getItem("products")) || [];
+let cart = [];
+let total = 0;
+
+function loadProducts(){
+  const container = document.querySelector(".products");
+  container.innerHTML = "";
+
+  products.forEach((p,i)=>{
+    container.innerHTML += `
+      <div class="card">
+        ${p.type==="image"
+          ? `<img src="${p.media}">`
+          : `<video src="${p.media}" controls></video>`}
+        <div class="info">
+          <h4>${p.name}</h4>
+          <p>KES ${p.price}</p>
+          <p>Stock: ${p.stock}</p>
+          <button onclick="addToCart(${i})">Add to Cart</button>
+        </div>
+      </div>`;
+  });
+}
+
+function addToCart(i){
+  if(products[i].stock <= 0){
+    alert("Out of stock");
+    return;
+  }
+  cart.push(products[i]);
+  products[i].stock--;
+  localStorage.setItem("products", JSON.stringify(products));
+  updateCart();
+  loadProducts();
+}
+
+function updateCart(){
+  items.innerHTML = "";
+  total = 0;
+  cart.forEach(p=>{
+    items.innerHTML += `<li>${p.name} - ${p.price}</li>`;
+    total += Number(p.price);
+  });
+  document.getElementById("total").innerText = total;
+}
+
+window.onload = loadProducts;
+</script>
+ 
 let total = 0;
 
 function addToCart(name, price){
@@ -219,3 +269,4 @@ function payMpesa(){
 
 </body>
 </html>
+
