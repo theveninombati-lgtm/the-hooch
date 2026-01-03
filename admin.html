@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>The Hooch | Admin</title>
+  <style>
+    body { font-family:Poppins,sans-serif; background:#fff0f6; padding:2rem; }
+    h1 { color:#ff6fae; }
+    input,button { padding:10px; margin:8px 0; width:100%; }
+    table { width:100%; background:white; margin-top:20px; }
+  </style>
+</head>
+<body>
+
+<h1>Admin Dashboard</h1>
+
+<input id="name" placeholder="Product Name">
+<input id="price" placeholder="Price">
+<button onclick="add()">Add Product</button>
+
+<table>
+  <tbody id="list"></tbody>
+</table>
+
+<script>
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+function add(){
+  products.push({name:name.value,price:price.value});
+  localStorage.setItem("products",JSON.stringify(products));
+  render();
+}
+
+function render(){
+  list.innerHTML="";
+  products.forEach(p=>{
+    list.innerHTML+=`<tr><td>${p.name}</td><td>${p.price}</td></tr>`;
+  });
+}
+
+render();
+</script>
+
+</body>
+</html>
